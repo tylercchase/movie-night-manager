@@ -5,9 +5,9 @@ export default function Groups() {
     return (
         <div>
             <div className="row">
-                Gamer Group
-                <Link to="/groups/gamer/manage">Manage</Link>
-                <Link to="/groups/gamer">Suggest</Link>
+                <span>Gamer Group</span>
+                <Link to="/groups/gamer/manage" className="link">Manage</Link>
+                <Link to="/groups/gamer" className="link">Suggest</Link>
             </div>
         </div>
     )

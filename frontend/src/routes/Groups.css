@@ -2,4 +2,10 @@
     width: 100%;
     display: flex;
     justify-content: space-between;
+    height: 50px;
+    align-items: center;
+    background: #3a3a3a;
+}
+.row * { 
+    margin: 15px;
 }
