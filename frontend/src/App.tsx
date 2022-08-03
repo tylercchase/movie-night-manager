@@ -7,8 +7,8 @@ function App() {
   return (
     <div className="App">
       <nav>
-        <Link to="/">Home</Link> | {" "}
-        <Link to="/groups">Groups</Link>
+        <Link to="/" className='link'>Home</Link>
+        <Link to="/groups" className='link'>Groups</Link>
       </nav>
       <Outlet></Outlet>
     </div>

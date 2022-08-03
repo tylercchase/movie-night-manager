@@ -1,0 +1,13 @@
+.poster {
+    width: 175px;
+    height: 180px;
+}
+.movie {
+    display: flex;
+    width: 175px;
+    height: 250px;
+    align-items: center;
+    flex-direction: column;
+    background: white;
+    color: black;
+}
