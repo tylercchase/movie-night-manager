@@ -5,9 +5,8 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 import './Manage.css'
 
-import Movie from '../models/movie';
 import Group from '../models/group';
-
+import Movie from '../shared/Movie'
 const getItems = (count: number, offset = 0) =>
   Array.from({ length: count }, (v, k) => k).map((k) => ({
     id: `item-${k + offset}`,
@@ -85,12 +84,12 @@ export default function Manage() {
 
     if (source.droppableId === destination.droppableId) {
       const items: any = reorder(
-        getList(source.droppableId),
+        generalMovies,
         result.source.index,
         result.destination.index
       );
       if (source.droppableId === "droppable2") {
-        setSelected(items);
+        setGeneralMovies(items);
       }
     } else {
       const result = move(
@@ -106,44 +105,22 @@ export default function Manage() {
 
   useEffect(()=> {
     let url = 'http://127.0.0.1:5000/api/group/gamers';
-    fetch(url).then(res => res.json()).then(data => {
+    fetch(url).then(res => res.json()).then((data) => {
       console.log(data)
+      let index = 1;
+      let generalMovies = data.movies.map((x: any) => {
+        x.id = index;
+        index = index + 1;
+        return x;
+      })
+      setGeneralMovies(generalMovies);
+      setNights(data.nights);
     })
   }, [])
   return (
     <div>
       <DragDropContext onDragEnd={onDragEnd}>
-        <details> <summary className="date">August 5th, 2022</summary>
-          <Droppable droppableId="droppable" direction="horizontal">
-          {(provided, snapshot) => (
-            <div
-              ref={provided.innerRef}
-              style={getListStyle(snapshot.isDraggingOver)}
-              className="movie-row"
-            >
-              {itemsa.map((item: any, index: any) => (
-                <Draggable key={item.id} draggableId={item.id} index={index}>
-                  {(provided, snapshot) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      style={getItemStyle(
-                        snapshot.isDragging,
-                        provided.draggableProps.style
-                      )}
-                    >
-                      {item.content}
-                    </div>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
 
-        </details>
         <h3 style={{"margin": "15px"}}>
           Movies
         </h3>
@@ -154,8 +131,8 @@ export default function Manage() {
               style={getListStyle(snapshot.isDraggingOver)}
               className="movie-row"
             >
-              {selected.map((item: any, index: any) => (
-                <Draggable key={item.id} draggableId={item.id} index={index}>
+              {generalMovies.map((item: any, index: any) => (
+                <Draggable key={item.id} draggableId={item.name} index={index}>
                   {(provided, snapshot) => (
                     <div
                       ref={provided.innerRef}
@@ -166,7 +143,7 @@ export default function Manage() {
                         provided.draggableProps.style
                       )}
                     >
-                      {item.content}
+                      <Movie thing={item}></Movie>
                     </div>
                   )}
                 </Draggable>
