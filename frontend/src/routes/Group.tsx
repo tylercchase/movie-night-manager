@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 
+import './Group.css'
 export default function Group() {
     let [movie, setMovie] = useState("");
     function handleChange(event: any) {
@@ -43,12 +44,14 @@ export default function Group() {
         // send off a request to actually add a movie to the db when that's implemented
     }
     return (
-        <div>
-            Suggest a movie 
-            <form onSubmit={handleSubmit}>
-                <input type="text" value={movie} onChange={handleChange}></input>
-                <button>Submit </button>
-            </form>
+        <div className="suggestBlock">
+            <div className="center">
+                <h2>Suggest a movie</h2> 
+                <form onSubmit={handleSubmit}>
+                    <input type="text" value={movie} onChange={handleChange} className="input-round-left"></input>
+                    <button className="input-round-right">Submit </button>
+                </form>
+            </div>
         </div>
     )
 }

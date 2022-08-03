@@ -45,6 +45,12 @@ def add_url():
     table.put_item(Item=item)
     return item
 
+@application.route('/api/group/<id>')
+def group(id):
+    response = table.get_item(Key={'group-name': id})
+    item = response['Item']
+    return item
+
 @application.route('/')
 def index():
     return "Hello World"

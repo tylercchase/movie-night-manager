@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // import Movie from "../shared/Movie";
 
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
@@ -67,6 +67,8 @@ export default function Manage() {
   const [itemsa, setItems] = useState(getItems(10));
   const [selected, setSelected] = useState(getItems(5, 10));
 
+  const [nights, setNights] = useState([]);
+  const [generalMovies, setGeneralMovies] = useState([])
   let id2List: any = {
     droppable: "items",
     droppable2: "selected",
@@ -101,6 +103,13 @@ export default function Manage() {
       setSelected(result.droppable2);
     }
   };
+
+  useEffect(()=> {
+    let url = 'http://127.0.0.1:5000/api/group/gamers';
+    fetch(url).then(res => res.json()).then(data => {
+      console.log(data)
+    })
+  }, [])
   return (
     <div>
       <DragDropContext onDragEnd={onDragEnd}>
