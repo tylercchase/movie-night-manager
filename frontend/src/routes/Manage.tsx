@@ -144,7 +144,6 @@ export default function Manage() {
               ref={provided.innerRef}
               style={getListStyle(snapshot.isDraggingOver)}
               className="movie-row"
-
             >
               {selected.map((item: any, index: any) => (
                 <Draggable key={item.id} draggableId={item.id} index={index}>
