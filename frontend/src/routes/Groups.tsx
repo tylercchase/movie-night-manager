@@ -1,10 +1,14 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link } from "react-router-dom";
 
+import './Groups.css'
 export default function Groups() {
     return (
         <div>
-            <Link to="/groups/gamer">Gamer group</Link>
-            <Outlet></Outlet>
+            <div className="row">
+                Gamer Group
+                <Link to="/groups/gamer/manage">Manage</Link>
+                <Link to="/groups/gamer">Suggest</Link>
+            </div>
         </div>
     )
 }

@@ -9,6 +9,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Movies from './routes/Movies';
 import Group from './routes/Group';
 import Groups from './routes/Groups';
+import Manage from "./routes/Manage";
+
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -18,9 +20,10 @@ root.render(
     <Routes>
       <Route path="/" element={<App />}>
         <Route path="movies" element={<Movies />}></Route>
-        <Route path="groups" element={<Groups />}>
-          <Route path=":groupid" element={<Group />}></Route>
-        </Route>
+        <Route path="groups" element={<Groups />}></Route>
+        <Route path="/groups/:groupid" element={<Group />}></Route>
+        <Route path="/groups/:groupid/manage" element={<Manage />}></Route>
+
       </Route>
     </Routes>
   </BrowserRouter>
