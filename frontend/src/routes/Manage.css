@@ -1,0 +1,8 @@
+.date {
+    cursor: pointer;
+    margin: 15px;
+}
+.movie-row {
+    display: flex;
+    margin: 10px;
+}

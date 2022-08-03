@@ -3,6 +3,11 @@ import { useState } from "react";
 
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
+import './Manage.css'
+
+import Movie from '../models/movie';
+import Group from '../models/group';
+
 const getItems = (count: number, offset = 0) =>
   Array.from({ length: count }, (v, k) => k).map((k) => ({
     id: `item-${k + offset}`,
@@ -59,8 +64,6 @@ const getListStyle = (isDraggingOver: any) => ({
 });
 
 export default function Manage() {
-  // items: getItems(10),
-  // selected: getItems(5, 10)
   const [itemsa, setItems] = useState(getItems(10));
   const [selected, setSelected] = useState(getItems(5, 10));
 
@@ -79,8 +82,11 @@ export default function Manage() {
     }
 
     if (source.droppableId === destination.droppableId) {
-      const items: any = getList(source.droppableId)
-
+      const items: any = reorder(
+        getList(source.droppableId),
+        result.source.index,
+        result.destination.index
+      );
       if (source.droppableId === "droppable2") {
         setSelected(items);
       }
@@ -98,11 +104,13 @@ export default function Manage() {
   return (
     <div>
       <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="droppable" direction="horizontal">
+        <details> <summary className="date">August 5th, 2022</summary>
+          <Droppable droppableId="droppable" direction="horizontal">
           {(provided, snapshot) => (
             <div
               ref={provided.innerRef}
               style={getListStyle(snapshot.isDraggingOver)}
+              className="movie-row"
             >
               {itemsa.map((item: any, index: any) => (
                 <Draggable key={item.id} draggableId={item.id} index={index}>
@@ -125,11 +133,18 @@ export default function Manage() {
             </div>
           )}
         </Droppable>
+
+        </details>
+        <h3 style={{"margin": "15px"}}>
+          Movies
+        </h3>
         <Droppable droppableId="droppable2" direction="horizontal">
           {(provided, snapshot) => (
             <div
               ref={provided.innerRef}
               style={getListStyle(snapshot.isDraggingOver)}
+              className="movie-row"
+
             >
               {selected.map((item: any, index: any) => (
                 <Draggable key={item.id} draggableId={item.id} index={index}>
