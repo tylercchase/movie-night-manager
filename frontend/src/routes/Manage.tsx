@@ -33,8 +33,8 @@ const move = (
   console.log(destination.movies)
   const [removed] = sourceClone.splice(droppableSource.index, 1);
   console.log(destClone);
-  destClone.push(removed)
-  // destClone.splice(droppableDestination.index, 0, removed);
+  // destClone.push(removed)
+  destClone.splice(droppableDestination.index, 0, removed);
   console.log(destClone);
   const result: any = {};
   result[droppableSource.droppableId] = sourceClone;
