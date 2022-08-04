@@ -7,17 +7,11 @@ import './Manage.css'
 
 import Movie from '../shared/Movie'
 
-const getItems = (count: number, offset = 0) =>
-  Array.from({ length: count }, (v, k) => k).map((k) => ({
-    id: `item-${k + offset}`,
-    content: `item ${k + offset}`,
-  }));
 
 const reorder = (list: any, startIndex: any, endIndex: any) => {
   const result = Array.from(list);
   const [removed] = result.splice(startIndex, 1);
   result.splice(endIndex, 0, removed);
-
   return result;
 };
 
@@ -83,13 +77,25 @@ export default function Manage() {
     }
 
     if (source.droppableId === destination.droppableId) {
-      const items: any = reorder(
-        generalMovies,
-        result.source.index,
-        result.destination.index
-      );
+
       if (source.droppableId === "generalMovies") {
+        const items: any = reorder(
+          generalMovies,
+          result.source.index,
+          result.destination.index
+        );
         setGeneralMovies(items);
+      } else if(source.droppableId) {
+        
+        let night = nights.findIndex((night: any) => {;return night.date === source.droppableId});
+        let copy: any = Array.from(nights);
+        const items: any = reorder(
+          copy[night].movies,
+          result.source.index,
+          result.destination.index
+        );
+        copy[night].movies = items;
+        setNights(copy);
       }
     } else {
       const result = move(

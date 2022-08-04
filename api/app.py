@@ -28,7 +28,7 @@ def add_url():
     except:
         return {
             'error':
-            'Needs a url in the json body'
+            'Needs stuff in json'
         }, 400
     group = 'gamers'
 
@@ -45,12 +45,17 @@ def add_url():
     table.put_item(Item=item)
     return item
 
-@application.route('/api/group/<id>')
+@application.route('/api/group/<id>', methods=['GET'])
 def group(id):
     response = table.get_item(Key={'group-name': id})
     item = response['Item']
     return item
 
+@application.route('/api/group/<id>', methods=['POST'])
+def update_group(id):
+    response = table.get_item(Key={'group-name': id})
+    item = response['Item']
+    return item
 @application.route('/')
 def index():
     return "Hello World"
