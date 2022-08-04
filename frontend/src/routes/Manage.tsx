@@ -5,8 +5,8 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 import './Manage.css'
 
-import Group from '../models/group';
 import Movie from '../shared/Movie'
+
 const getItems = (count: number, offset = 0) =>
   Array.from({ length: count }, (v, k) => k).map((k) => ({
     id: `item-${k + offset}`,
@@ -27,15 +27,19 @@ const move = (
   droppableSource: any,
   droppableDestination: any
 ) => {
-  const sourceClone = Array.from(source);
-  const destClone = Array.from(destination);
+  const sourceClone = Array.from(source.movies ?? source);
+  const destClone = Array.from(destination.movies ?? destination);
+  console.log(droppableSource)
+  console.log(destination.movies)
   const [removed] = sourceClone.splice(droppableSource.index, 1);
-
-  destClone.splice(droppableDestination.index, 0, removed);
-
+  console.log(destClone);
+  destClone.push(removed)
+  // destClone.splice(droppableDestination.index, 0, removed);
+  console.log(destClone);
   const result: any = {};
   result[droppableSource.droppableId] = sourceClone;
   result[droppableDestination.droppableId] = destClone;
+  console.log(result);
 
   return result;
 };
@@ -63,16 +67,12 @@ const getListStyle = (isDraggingOver: any) => ({
 });
 
 export default function Manage() {
-  const [itemsa, setItems] = useState(getItems(10));
-  const [selected, setSelected] = useState(getItems(5, 10));
 
-  const [nights, setNights] = useState([]);
+  const [nights, setNights]: any = useState([]);
   const [generalMovies, setGeneralMovies] = useState([])
-  let id2List: any = {
-    droppable: "items",
-    droppable2: "selected",
-  };
-  let getList = (id: any) => (id2List[id] === "items" ? itemsa : selected);
+
+  let findNight = (date: any) => nights.find((night: any) => night.date === date)
+  let getList = (id: any) => (id === "generalMovies" ? generalMovies : findNight(id));
 
   let onDragEnd = (result: any) => {
     const { source, destination } = result;
@@ -88,7 +88,7 @@ export default function Manage() {
         result.source.index,
         result.destination.index
       );
-      if (source.droppableId === "droppable2") {
+      if (source.droppableId === "generalMovies") {
         setGeneralMovies(items);
       }
     } else {
@@ -98,33 +98,81 @@ export default function Manage() {
         source,
         destination
       );
-      setItems(result.droppable);
-      setSelected(result.droppable2);
+      if(result.generalMovies) {
+        setGeneralMovies(result.generalMovies);
+      }
+
+      for( let x of Object.keys(result)) {
+        if(x !== 'generalMovies') {
+          let night = nights.findIndex((night: any) => {;return night.date === x});
+          let copy: any = Array.from(nights);
+          copy[night].movies = result[x];
+          setNights(copy);
+        }
+      }
     }
   };
 
   useEffect(()=> {
     let url = 'http://127.0.0.1:5000/api/group/gamers';
     fetch(url).then(res => res.json()).then((data) => {
-      console.log(data)
       let index = 1;
-      let generalMovies = data.movies.map((x: any) => {
+      let generalStuff = data.movies.map((x: any) => {
         x.id = index;
         index = index + 1;
         return x;
       })
-      setGeneralMovies(generalMovies);
-      setNights(data.nights);
+      let generalNights = data.nights.map((night: any) => {
+        night.movies = night.movies.map((x: any) => {
+          x.id = index;
+          index = index + 1;
+          return x;
+        })
+        return night
+      })
+      setGeneralMovies(generalStuff);
+      setNights(generalNights);
     })
   }, [])
   return (
     <div>
       <DragDropContext onDragEnd={onDragEnd}>
-
+      { nights.map( (night: any, index: any) => 
+      <details key={index}> <summary>{night.date}</summary>
+      <Droppable droppableId={night.date} direction="horizontal">
+          {(provided, snapshot) => (
+            <div
+              ref={provided.innerRef}
+              style={getListStyle(snapshot.isDraggingOver)}
+              className="movie-row"
+            >
+              {night.movies.map((item: any, index: any) => (
+                <Draggable key={item.id} draggableId={item.name} index={index}>
+                  {(provided, snapshot) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                      style={getItemStyle(
+                        snapshot.isDragging,
+                        provided.draggableProps.style
+                      )}
+                    >
+                      <Movie thing={item}></Movie>
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </details>
+        )}
         <h3 style={{"margin": "15px"}}>
           Movies
         </h3>
-        <Droppable droppableId="droppable2" direction="horizontal">
+        <Droppable droppableId="generalMovies" direction="horizontal">
           {(provided, snapshot) => (
             <div
               ref={provided.innerRef}
