@@ -36,8 +36,6 @@ def add_url():
     response = table.get_item(Key={'group-name': group})
     item = response['Item']
 
-    for x in item['movies']:
-        print(x)
     if any(x for x in item['movies'] if x['name'] == movie['name']):
         return {'error': 'movie already suggested'}, 400
     item['movies'].append(movie)
@@ -55,6 +53,15 @@ def group(id):
 def update_group(id):
     response = table.get_item(Key={'group-name': id})
     item = response['Item']
+    query = request.get_json()
+    movies = query['movies']
+    nights = query['nights']
+
+    table.put_item(Item={
+        'group-name': id,
+        'movies': movies,
+        'nights': nights
+    })
     return item
 @application.route('/')
 def index():

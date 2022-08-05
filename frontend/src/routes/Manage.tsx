@@ -23,17 +23,11 @@ const move = (
 ) => {
   const sourceClone = Array.from(source.movies ?? source);
   const destClone = Array.from(destination.movies ?? destination);
-  console.log(droppableSource)
-  console.log(destination.movies)
   const [removed] = sourceClone.splice(droppableSource.index, 1);
-  console.log(destClone);
-  // destClone.push(removed)
   destClone.splice(droppableDestination.index, 0, removed);
-  console.log(destClone);
   const result: any = {};
   result[droppableSource.droppableId] = sourceClone;
   result[droppableDestination.droppableId] = destClone;
-  console.log(result);
 
   return result;
 };
@@ -60,6 +54,7 @@ const getListStyle = (isDraggingOver: any) => ({
   overflow: 'auto',
 });
 
+
 export default function Manage() {
 
   const [nights, setNights]: any = useState([]);
@@ -67,6 +62,42 @@ export default function Manage() {
 
   let findNight = (date: any) => nights.find((night: any) => night.date === date)
   let getList = (id: any) => (id === "generalMovies" ? generalMovies : findNight(id));
+  useEffect(() => {
+    let url = 'http://127.0.0.1:5000/api/group/gamers';
+    let parsedNights = nights.map((night: any) => {
+        let temp = Object.assign({}, night)
+        temp.movies = temp.movies.map(
+         (movie: any) => {
+            let temp2 = Object.assign({}, movie);
+            delete temp2.id;
+            return temp2;
+          }
+        )
+
+        return temp;
+      }
+    )
+    let parsedGeneralMovies = generalMovies.map((movie: any) => {
+      let temp = Object.assign({}, movie);
+      delete temp.id;
+      return temp;
+    })
+    let jsonStuff = 
+    {
+      'group-name': 'gamers',
+      'movies': parsedGeneralMovies,
+      'nights': parsedNights,
+    }
+      const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(jsonStuff)
+        };
+        fetch(url, requestOptions)
+            .then(response => response.json())
+            .then(_data => {
+            });
+  }, [nights, generalMovies])
 
   let onDragEnd = (result: any) => {
     const { source, destination } = result;
